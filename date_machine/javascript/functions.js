@@ -31,4 +31,8 @@ var functions = {
     "ThroughRange": function(){return 1;},
     "TimeRange": function(){return 1;},
     "AltTimeRange": function(){return 1;},
+    //# Defaults
+    "_default_group": function(){return 1;},
+    "_default_type": function(){return 1;},
+    "_default": function(){return 1;},
 };

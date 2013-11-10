@@ -18,10 +18,15 @@ function reparse_emulator(take, function_name, tree, matches, functions) {
         ));
         current_position += element[take_];
     }
-    if (tree.length == 0) 
-        functions[function_name].apply(functions[function_name], matches.slice(0, take));
+    if (tree.length == 0)
+        return execute_function(function_name, matches.slice(0, take), functions, true);
+    else
+        return execute_function(function_name, results, functions, true);
+}
+
+function execute_function(function_name, arguments, functions, is_type) {
     console.log(function_name);
-    return functions[function_name].apply(functions[function_name], results);
+    return functions[function_name].apply(functions[function_name], arguments);
 }
 
 
