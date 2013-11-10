@@ -6,9 +6,9 @@ import reparse
 from python.functions import functions
 
 
-def build_date_parser(parse_type=reparse.basic_parser):
+def build_date_parser(parser_type=reparse.basic_parser):
     return reparse.parser(
-        parser_type=parse_type,
+        parser_type=parser_type,
         functions=functions,
         expressions_yaml_path='data/expressions.yaml',
         patterns_yaml_path='data/patterns.yaml'

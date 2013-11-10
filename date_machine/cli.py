@@ -1,7 +1,7 @@
 import reparse
-from date_machine import build_date_parser
 import sys
 sys.path.append('..')
+from date_machine import build_date_parser
 from test.evaluate import evaluate_msg
 
 modes = {
@@ -25,7 +25,7 @@ def cli(_, mode='tree', verbose=''):
             print('Invalid mode. Modes: {}'.format(", ".join(modes.keys())))
             return
 
-    print build_date_parser(modes[mode])
+    print build_date_parser(parser_type=modes[mode])
 
 
 if __name__ == "__main__":

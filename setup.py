@@ -9,7 +9,6 @@ def readme_or_docstring():
         return open(path).read()
     else:
         import date_machine
-
         return date_machine.__doc__
 
 setup(name='date_machine',
