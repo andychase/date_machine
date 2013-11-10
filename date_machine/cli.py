@@ -3,11 +3,13 @@ import sys
 sys.path.append('..')
 from date_machine import build_date_parser
 from test.evaluate import evaluate_msg
+from javascript import generate_js
 
 modes = {
     'python': reparse.basic_parser,
     'tree': reparse.build_tree_parser,
-    'eval': lambda _: evaluate_msg(reparse.pattern_list(_))
+    'eval': lambda _: evaluate_msg(reparse.pattern_list(_)),
+    'js': lambda _: generate_js(reparse.build_tree_parser(_))
 }
 
 
@@ -15,11 +17,6 @@ def cli(_, mode='tree', verbose=''):
     verbose = True if verbose == 'verbose' else False
     if verbose:
             modes['eval'] = lambda _: evaluate_msg(reparse.pattern_list(_), True)
-
-    if mode == 'tree':
-        import json
-        print(json.dumps(build_date_parser(modes['tree'])))
-        return
 
     if mode not in modes:
             print('Invalid mode. Modes: {}'.format(", ".join(modes.keys())))
