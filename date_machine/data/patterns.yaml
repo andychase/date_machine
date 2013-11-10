@@ -1,0 +1,129 @@
+# Use the smaller bits of regex to build dynamic regex patterns #
+
+# ns: ordinal Number Suffix such as rd th etc. as in 3rd, 4th
+
+
+LargeRepeatWords:
+  Order: 1
+  Pattern: |
+    (?:every\s)?
+    <FirstSecond>?
+    (?: \s and \s <FirstSecond>)?
+    \s? <Weekday>s?,?\s?
+    (?: \s? of \s the \s (?:month|week))?
+
+ReverseBasicText:
+  Order: 2
+  Pattern: |
+    (?:<Time>?.?,?\s)?
+    <DateNum> \s <Month> \s <YearNum>?
+  Matches:
+     3 September | 3rd September | 3rd September 2012
+
+BasicTime:
+  Order: 1
+  Pattern: |
+    <Time>,?\s<Weekday>
+  Matches:
+    4:00pm
+
+BasicText:
+  Order: 3
+  Pattern: |
+    (?:<Time>?.?,?\s)?
+    (?:<LargeRepeatWords>.?,?\s?)?
+    (?:<Weekday>,?\s)?
+    <Month>\s<DateNum>[.,\s]?<YearNum>?
+  Matches:
+     September 3 | September 3rd | September 3rd., 2012
+
+MultiTime:
+  Order: 4
+  Pattern: |
+    <Time> \s and \s <BasicText>
+
+Slash:
+  Order: 5
+  Pattern: |
+    <MonthNum>\/<DateNum>\/<YearNum>\s?-?\s?<Time>?
+  Matches:
+    01/18/2013 | 12/3/2012
+
+# Some ranges
+MonthRange:
+  Order: 6
+  Pattern: |
+    <Month>\s<DateNum>\s?-\s?<DateNum>
+  Matches:
+    December 1 - 2 | June 5 - 19 | Dec. 3 - 4
+
+WeekdayRangeWithTime:
+  Order: 7
+  Pattern: |
+    <Time>
+    (?: \s and \s <Time>)?\s
+    <Weekday> - <Weekday>,?\s?
+    <MonthRange>
+  Matches:
+     September 3 | September 3rd | September 3rd., 2012 # TODO: Update this
+
+WeekdayRangeWithExtra:
+  Order: 9
+  Pattern: |
+      <Time>
+      (?: \s and \s <Time>)?\s
+      <Weekday> - <Weekday>
+      \s and \s <Time> \s <Weekday>,?\s
+      <MonthRange>
+  Matches:
+    7:30 pm Friday-Saturday and 3 pm Sunday, Sept. 21-23., Friday September 21
+
+WeekdayRangeWithExtraBackwards:
+  Order: 10
+  Pattern: |
+    <Time> \s <Weekday>,?\s?
+    <TimeAndTime> \s
+    <Weekday> - <Weekday>,?\s
+    <MonthRange>
+  Matches:
+    8 pm Thursday, 7:30 and 10 pm Friday-Saturday, Sept. 13-15.
+
+UntilRange:
+  Order: 11
+  Pattern: |
+    <BasicText>\s until \s <BasicText>
+  Matches:
+    Noon Saturday, Sept. 22 until midnight Sunday, Sept. 23., Saturday September 22
+
+ThroughRange:
+  Order: 12
+  Pattern: |
+    <Time>? \s <Weekday>s (?:-<Weekday>s)? \s through \s
+    <Month> \s <DateNum>.?,? \s <BasicText>
+  Matches:
+    8 pm Fridays-Saturdays through Oct. 13., Friday October 05
+
+TimeRange:
+  Order: 9
+  Pattern: |
+    (?:<UnstrictTime>|<Time>)\s?-\s?<BasicText>
+  Matches:
+    7-9 pm Wednesday, Oct. 31 | 11 - 12pm Sep. 1
+
+AltTimeRange:
+  Order: 9
+  Pattern: |
+    (?:<LargeRepeatWords>.?,?\s?)?
+    (?:<Weekday>,?\s)?
+    <Month>\s<DateNum>[.,\s]?<YearNum>?
+    \s?
+    <Time> \s? - \s? (?:<UnstrictTime>|<Time>)
+  Matches:
+     Wednesday, Oct. 31 7-9 pm | Sep. 1 11 - 12pm
+
+WeekdayRangeWithTimeRange:
+  Order: 10
+  Pattern: |
+    <Time>\-<WeekdayRangeWithTime>
+  Matches:
+       September 3 | September 3rd | September 3rd., 2012 # TODO: Update this

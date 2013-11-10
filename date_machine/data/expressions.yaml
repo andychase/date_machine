@@ -1,0 +1,222 @@
+# Base Regular Expression types to be used with patterns #
+
+Time:
+  Steve Valaitis:
+    Expression: |
+        ([0]?[1-9]|1[0-2])
+        [:\.]
+        ([0-5][0-9])
+        (?:[:\.] ([0-5][0-9]))?
+        \s?
+        (am|pm)?
+    Description:
+         Will match a 12 hour time with AM or PM specified.
+           Matches times seperated by either a colon or a period.
+           Allows 0-59 minutes, and 0-59 seconds. Seconds are not required.
+    Matches:
+        1:01 AM | 03.24.36 AM | 6:00pm
+    Non-Matches:
+        19:31 AM | 9:9 PM | 25:60:61
+    Groups:
+      - Hour
+      - Minute
+      - Second
+      - AMPM
+
+  Greg Burns:
+    Expression: |
+        ([0-9]|[1][0-2])\s? (am|pm)
+    Description: >
+      Simple hour and am/pm time.
+    Matches:
+        8am | 8 am
+    Non-Matches:
+        8a | 8 a | 8:00 am
+    Groups:
+      - Hour
+      - AMPM
+
+  Text Parts:
+    Expression: |
+      (Noon|Midnight)
+    Description:
+      Matches those special parts of the day
+    Matches:
+      Noon | Midnight
+    Groups:
+      - SpecialTimeText
+
+UnstrictTime:
+  Greg Burns UnstrictTime:
+    Expression: |
+        ([0-9]|[1][0-2])
+    Description: >
+      Simple unstrict time
+    Matches:
+        1 | 12
+    Non-Matches:
+        8a | 8 a | 8:00 am
+    Groups:
+      - Hour
+    Comment:
+      Only use this when some other pattern/expression
+      is used also so that it can be sure that this is an hour.
+      (Before this was matching loads of arbitrary numbers)
+
+
+
+TimeAndTime:
+  Steve Valaitis And Time:
+    Expression: |
+        ([0]?[1-9]|1[0-2])
+        (?:[:\.]([0-5][0-9]) )?
+        \s? (am|pm)?
+
+        \s (?:and|\&) \s
+
+        ([0]?[1-9]|1[0-2])
+        (?: [:\.] ([0-5][0-9]) )?
+        \s?
+        (am|pm)?
+    Description:
+         Will match a 12 hour time with AM or PM specified.
+           Matches times seperated by either a colon or .
+           Allows 0-59 minutes, and 0-59 seconds. Seconds are not required.
+    Matches:
+        1:01 AM |  | 3:30 AM
+    Non-Matches:
+        19:31 AM | 9:9 PM | 25:60:61 # TODO: Update this
+    Author:
+    Groups:
+      - Hour
+      - Minute
+      - AMPM1
+      - Hour2
+      - Minute2
+      - AMPM2
+
+# Time Zone #
+Timezone:
+  Robert van der Boon:
+    Expression: |
+        ([-+])(?:(0[0-9]|1[0-3]):([03]0|45)|14:00)
+    Description: >
+         This matches timezone offsets.
+         Also matches non-hour offsets like India (+05:30) and Nepal (+5:45).
+         See for more timezone information: http://en.wikipedia.org/wiki/Time_zone
+    Matches:
+        +00:00 | -05:00 | +13:45
+    Non-Matches:
+        +14:30 | +01:14 | -09:55
+    Author:  Robert van der Boon
+    Groups:
+      - PlusMinusGMT
+      - HourOffset
+      - MinuteOffset
+
+# Date #
+DateNum:
+  Chase Date:
+    Expression: |
+        (3[0-2]|[0-2]?[0-9])(th|rd|st|nd)?(?![0-9])
+    Description: >
+         Simple Date Matching
+    Matches:
+        12 | 03 | 19
+    Non-Matches:
+        33 | a03 | Jan3
+    Author:  Chase
+    Groups:
+      - Day
+      - Abbr
+
+# Year #
+YearNum:
+  Chase Year:
+    Expression: |
+        ([12][0-9]{3})
+    Description: >
+         Simple Year Matching
+    Matches:
+        2005 | 1992 | 2012
+    Non-Matches:
+        3001 | a003 | 19992
+    Groups:
+      - Year
+
+MonthNum:
+  Chase Month:
+    Expression: |
+      (1[0-2]|[0][1-9])
+    Groups:
+      - MonthNum
+
+Month:
+  Michael Ash7:
+    Expression: |
+        (J(?:anuary|u(?:ne|ly))|February|Ma(?:rch|y)|A(?:pril|ugust)|(?:(?:(?:Sept|Nov|Dec)em)|Octo)ber)
+    Description: >
+        This RE validate the full name of the months.
+    Matches:
+        January | May | October
+    Non-Matches:
+        Jan | Septem | Octo
+    Author: Michael Ash7
+    Groups:
+      - MonthString
+
+  Stephen Lam:
+    Expression: |
+        (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sept?|Oct|Nov|Dec).?
+    Description: >
+      valid date base on Month
+    Matches:
+      Jan | Feb. | Mar
+    Non-Matches:
+      January | Febur
+    Author: Stephen Lam
+    Groups:
+      - MonthString
+
+# Weekday #
+Weekday:
+  Michael Ash10:
+    Expression: |
+        ((?:Sun|Mon|(?:T(?:ues|hurs))|Fri)(?:day|\.)?|Wed(?:\.|nesday)?|Sat(?:\.|urday)?|T(?:(?:ue?)|(?:hu?r?)))\.?
+    Description: >
+        This RE matches Days of the week or their abbreviations.
+    Matches:
+        Sunday | Mon | Tu
+    Non-Matches:
+        day | Wedday | Payday
+    Groups:
+      - WeekdayString
+
+
+# Ordinal First Second, etc. #
+FirstSecond:
+  Chase First:
+    Expression: |
+     (First|Second|Third|Fou?rth)
+    Description: >
+      This matches the words in front of weekdays.
+    Groups:
+      - FirstSecond
+
+# Slash Format #
+Slash:
+  Bill LaPrade:
+    Expression: |
+        ([0]\d|[1][0-2])\/
+        ([0-2]?\d|[3][0-1])\/
+        ([2][01]|[1][6-9])\d{2}
+    Description:
+         This is a combination of a few regular expressions found on this site.
+    Matches:
+        12/31/2002 | 12/31/2002 | 12/31/2002
+    Non-Matches:
+        12/31/02 | 12/31/2002 14:00
+    Groups:
+      - Month
+      - Day
+      - Year
