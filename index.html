@@ -17,11 +17,12 @@ h1 { background-image: url('gear.png'); background-repeat: no-repeat; background
 h1 { padding-left: 75px; position: relative; right: 75px; }
 h2 { position: relative; right: 135px; top: 36pt; width: 120px; height: 24pt; text-align: right; }
 h2 { font-size: 12pt; }
-#content {width: 250px; margin: 50px auto 0 auto; }
+#content {width: 275px; margin: 50px auto 0 auto; }
 #header span {position: relative; bottom: 10px;}
 ul { list-style: none; padding-left: 0; }
 
 #test_input { background-color: transparent; border: none; border-bottom: 1px solid black; width: 100%;}
+#test_input:focus { outline: none; }
 #background {
     position: absolute;
     top: 0;
@@ -40,9 +41,11 @@ ul { list-style: none; padding-left: 0; }
     -o-user-select: none;
     user-select: none;
 }
-table { border-collapse:collapse; }
+table { border-collapse:collapse; width: 100%; }
 table, th, td { border: 1px solid black; padding: 3px;}
        th     { background-color: rgba(0, 0, 0, 0.21); font-weight: 400; }
+a {text-decoration: none; color: black;}
+a:hover {background-color: rgba(0, 0, 0, 0.21);}
     </style>
 </head>
 <body>
@@ -58,10 +61,10 @@ parser_description = [{"regex": "(?:(?:(?:([0]?[1-9]|1[0-2])[:\\.]([0-5][0-9])(?
     <div id="test">
         <h2>Test</h2>
         <input type="text" id="test_input" />
-        <h2 id="results" >Results</h2>
+        <h2 id="results" style="display:none;" >Results</h2>
     </div>
-    <div id="stats">
-        <h2>Stats</h2>
+    <div id="info">
+        <h2>Info</h2>
         <table>
             <tr>
                 <th>Language</th>
@@ -73,11 +76,20 @@ parser_description = [{"regex": "(?:(?:(?:([0]?[1-9]|1[0-2])[:\\.]([0-5][0-9])(?
             </tr>
             <tr>
                 <th>Grammar</th>
-                <td>Regex, based on <a href="http://reparse.readthedocs.org">RE|PARSE</a></td>
+                <td>Regex</td>
             </tr>
             <tr>
-                <th>Lines</th>
-                <td></td>
+                <th>Based on</th>
+                <td><a href="http://reparse.readthedocs.org">RE|PARSE</a></td>
+            </tr>
+            <tr>
+                <th>Source Lines</th>
+                <td>253 .py + 300 .yml</td>
+            </tr>
+            <tr>
+                <th>Date Formats</th>
+                <td>39 tested</td>
+
             </tr>
         </table>
     </div>
@@ -86,10 +98,10 @@ parser_description = [{"regex": "(?:(?:(?:([0]?[1-9]|1[0-2])[:\\.]([0-5][0-9])(?
         <iframe src="http://asperous.github.io/github-buttons/github-btn.html?user=asperous&repo=pipeless&type=view&size=large"
                 allowtransparency="true" frameborder="0" scrolling="0" width="170" height="30"></iframe>
         <br />
-        <!--<a href="https://travis-ci.org/asperous/date_machine" class="build_status">
+        <a href="https://travis-ci.org/asperous/date_machine" class="build_status">
         <img alt="Build Status"
-                 src="https://travis-ci.org/asperous/date_machine.png?branch=master"
-                 style="max-width:100%;"></a>-->
+                 src="https://travis-ci.org/asperous/pipeless.png?branch=master"
+                 style="max-width:100%;"></a>
     </div>
 </div>
 </body>
