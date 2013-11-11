@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+    <title>Date Machine: The last date parser</title>
+    <meta name="description" content="Date Machine: The last date parser"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+    <link rel="icon" href="http://asperous.github.io/date_machine/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="http://asperous.github.io/date_machine/favicon.ico" type="image/x-icon">
+    <link href='normalize.css' rel='stylesheet' type='text/css'/>
+
+    <style type="text/css">
+body { background-color: #AAA; font-family: Arial; }
+h1 { text-shadow: 0 0 1px black; }
+h1 { background-image: url('gear.png'); background-repeat: no-repeat; background-position-y: 6px;}
+h1 { padding-left: 75px; position: relative; right: 75px; }
+h2 { position: relative; right: 135px; top: 36pt; width: 120px; height: 24pt; text-align: right; }
+h2 { font-size: 12pt; }
+#content {width: 250px; margin: 50px auto 0 auto; }
+#header span {position: relative; bottom: 10px;}
+ul { list-style: none; }
+
+#test_input { background-color: transparent; border: none; border-bottom: 1px solid black; width: 100%;}
+#background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity 0.5;
+    font-family: monospace;
+    -moz-user-select: -moz-none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+    </style>
+</head>
+<body>
+<div id="background">
+
+</div>
+<div id="content">
+    <div id="header">
+        <h1 id="date_machine">Date_<br />Machine</h1>
+        <span>The last date parser</span>
+    </div>
+
+    <div id="test">
+        <h2>Test</h2>
+        <input type="text" id="test_input" />
+        <h2 id="results" >Results</h2>
+    </div>
+
+    <div id="info">
+        <h2>Info</h2>
+        <ul>
+            <li>Free, Open Source</li>
+            <li>Fast</li>
+            <li>Highly Modifiable</li>
+            <li>Find matches in text</li>
+        </ul>
+    </div>
+    <div>
+        <h2 id="source_download">Source/<br />Download</h2>
+        <iframe src="http://asperous.github.io/github-buttons/github-btn.html?user=asperous&repo=pipeless&type=view&size=large"
+                allowtransparency="true" frameborder="0" scrolling="0" width="170" height="30"></iframe>
+        <br />
+        <!--<a href="https://travis-ci.org/asperous/date_machine" class="build_status">
+        <img alt="Build Status"
+                 src="https://travis-ci.org/asperous/date_machine.png?branch=master"
+                 style="max-width:100%;"></a>-->
+    </div>
+</div>
+</body>
+</html>
