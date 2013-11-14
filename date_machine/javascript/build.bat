@@ -1,0 +1,1 @@
+coffee --join date_machine.js --compile ./
