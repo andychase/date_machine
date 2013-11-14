@@ -493,10 +493,13 @@ parser = (function() {
   };
 
   patt = new RegExp(parser_description[1].regex, "gi");
+  p = parser_description[1].tree;
   return function (input) {
-      o = patt.exec(input).slice(1);
-      p = parser_description[1].tree;
-      return reparse_emulator(p[0], p[1], p[2], o, functions);
+      out = [];
+      while ((o = patt.exec(input)) !== null) {
+        out.push(reparse_emulator(p[0], p[1], p[2], o.slice(1), functions));
+      }
+      return out;
   }
 
 }).call(this);

@@ -49,31 +49,35 @@ a:hover {background-color: rgba(0, 0, 0, 0.21);}
     </style>
         <script type="text/javascript" src="date_machine.js"></script>
         <script type="text/javascript">
-        function obj_to_table(input) {
+        function obj_to_table(input_list) {
            var out = '';
-           for (i in input) {
-           out += '<table>'
-           for (j in input[i]) {
-                if (input[i][j] !== undefined)
-                    out += '<tr><th>' + j + '</th>' + '<td>'+ input[i][j] + '</td></tr>'
-             }
+        for (input_index in input_list) {
+            input = input_list[input_index];
+            for (i in input) {
+                out += '<table>';
+                for (j in input[i]) {
+                    if (input[i][j] !== undefined)
+                        out += '<tr><th>' + j + '</th>' + '<td>'+ input[i][j] + '</td></tr>';
+                }
+                out += '</table><br />';
+            }
+            out += '<br />'
+        }
 
-           out += '</table><br />'
-           }
-           return out;
+       return out;
         }
         function change_date_inputs() {
             input = document.getElementById('test_input');
             results_header = document.getElementById('results_header');
             results_data = document.getElementById('results_data');
-           try {
-                var output = parser(input.value)
-                results_header.style.display = 'inherit';
-                results_data.innerHTML = obj_to_table(output);
-           } catch(err) {
-                results_header.style.display = 'none';
-                results_data.innerHTML = '';
-           }
+        try {
+            var output = parser(input.value)
+            results_header.style.display = 'inherit';
+            results_data.innerHTML = obj_to_table(output);
+         } catch(err) {
+              results_header.style.display = 'none';
+              results_data.innerHTML = '';
+          }
         }
         </script>
 </head>
