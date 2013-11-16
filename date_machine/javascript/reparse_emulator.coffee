@@ -57,7 +57,7 @@ for pattern in parser_description
   pattern.regex = new RegExp(pattern.regex, "gi")
 
 # Run
-this.parse = (input) ->
+this.date_machine = (input) ->
   out = []
   for pattern in parser_description
     regex = pattern.regex
@@ -72,4 +72,4 @@ this.parse = (input) ->
         out.push [pattern.order, [start, end, matcher_output]]
   return get_best(out.sort((a,b)->a[0]-b[0]))
 
-console.log this.parse('8 pm Thursday, 7:30 and 10 pm Friday-Saturday, Sept. 13-15.')
+console.log this.date_machine('8 pm Thursday, 7:30 and 10 pm Friday-Saturday, Sept. 13-15.')
