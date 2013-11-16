@@ -1,1 +1,2 @@
-coffee --join date_machine.js --compile ./
+@echo off
+coffee --join date_machine.js --compile functions.coffee parser_description.coffee reparse_emulator.coffee & coffee --join tests.js --compile functions.coffee parser_description.coffee reparse_emulator.coffee tests.coffee

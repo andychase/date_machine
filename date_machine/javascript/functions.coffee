@@ -8,6 +8,15 @@ Date = (year, month, day) ->
   month: month
   day: day
 
+_replace = (_old, _new) ->
+    year:   if _new.year? then _new.year else _old.year
+    month:  if _new.month? then _new.month else _old.month
+    day:    if _new.day? then _new.day  else _old.day
+    hour:   if _new.hour? then _new.hour else _old.hour
+    minute: if _new.minute? then _new.minute else _old.minute
+    second: if _new.second? then _new.second else _old.second
+    am_pm:  if _new.am_pm? then _new.am_pm else _old.am_pm
+
 progressive_match = (string, possibilities) ->
     part = ""
     if not string? then return
@@ -49,6 +58,8 @@ weekday_to_number = (WeekdayString ) ->
     return progressive_match(WeekdayString, weekday_list)
 
 am_pm = (input) ->
+    if not input?
+      return
     if input.toLowerCase() == "am" then 0
     else if input.toLowerCase() == "pm" then 12
 
@@ -69,20 +80,20 @@ time_expression = (Hour, Minute, Second, AMPM, SpecialTimeText ) ->
             return Date(hour)
     d = Date()
     if Hour
-        d[hour] = Number(Hour)
+        d.hour = Number(Hour)
     if Minute
-        d[minute] = Number(Minute)
+        d.minute = Number(Minute)
     if Second
-        d[second] = Number(Second)
+        d.second = Number(Second)
     if AMPM?
         if d.hour
             if noon(d.hour, AMPM)
-                d = d._replace(hour)
+                d.hour = 12
             else if midnight(d.hour, AMPM)
-                d = d._replace(hour)
+                d.hour = 0
             else
-                d = d._replace(hour=d.hour + AMPM)
-        d = d._replace(am_pm)
+                d.hour = d.hour + AMPM
+        d.am_pm = AMPM
     if [d.hour, d.minute, d.second] != [undefined, undefined, undefined]
         return d
 
@@ -91,20 +102,19 @@ time_and_time = (Hour, Minute, AMPM1, Hour2, Minute2, AMPM2) ->
     if AMPM2 is not ""
         AMPM2 = am_pm(AMPM2)
     if not AMPM1 and not AMPM2
-        return [time_expression(Hour, Minute), time_expression(Hour, Minute)]
+        return [time_expression(Hour, Minute), time_expression(Hour2, Minute2)]
     else if not AMPM1
-        return [time_expression(Hour, Minute, AMPM),
-                time_expression(Hour, Minute, AMPM)]
+        return [time_expression(Hour, Minute, undefined, AMPM2),
+                time_expression(Hour2, Minute2, undefined, AMPM2)]
     else if not AMPM2
-        return [time_expression(Hour, Minute, AMPM),
-                time_expression(Hour, Minute, AMPM)]
+        return [time_expression(Hour, Minute, undefined, AMPM1),
+                time_expression(Hour2, Minute2, undefined, AMPM1)]
 
 
 # Date Functions
 
 month_type = (input...) ->
     for value in input
-        console.log value
         if value?
             return Number(value)
 
@@ -132,13 +142,22 @@ year = (Year) ->
 # Patterns #
 
 
-weekday_range_with_time = (time1, time2, weekday1, weekday2, MonthRange) ->
+weekday_range_with_time = (time1, time2, [weekday1], [weekday2], MonthRange) ->
     output = []
+    for time in time1
+      if time?
+        time1 = time
+        break
+    for time in time2
+      if time?
+        time2 = time
+        break
+
     if time1
         for date in MonthRange
-            output.push(date.update(time1))
+            output.push(_replace(date, time1))
             if time2
-                output.push(date.update(time2))
+                output.push(_replace(date, time2))
     return output
 
 
@@ -148,13 +167,13 @@ weekday_range_with_extra = ( \
     output = []
     if time
         for date in MonthRange
-            if hasattr(date, 'weekday')
+            if date.weekday?
                 if date.weekday in range(weekday_start, weekday_end + 1)
-                    output.push(date.update(time))
+                    output.push(_replace(date, time))
                     if and_time
-                        output.push(date.update(and_time))
+                        output.push(_replace(date, and_time))
                 if date.weekday == extra_weekday
-                    output.push(date.update(extra_time))
+                    output.push(_replace(date, extra_time))
     return output
 
 
@@ -195,7 +214,7 @@ month_range = (month, date_a, date_b) ->
 multi_time = (time1, BasicText) ->
     output = []
     if time1 and BasicText
-        output.push(BasicText.update(time1))
+        output.push(_replace(BasicText, time1))
         output.push(BasicText)
         return output
 
@@ -207,9 +226,9 @@ large_repeat_words = ->
 weekday_range_with_time_range = (time1, weekday_range) ->
     output = []
     if time1 and weekday_range
-        range = timedelta_from_Date(weekday_range[0].update(time1), weekday_range[0])
+        range = timedelta_from_Date(_replace(weekday_range[0], time1), weekday_range[0])
         for weekday in weekday_range
-            output.push(weekday._replace(hour=time1.hour, minute=time1.minute, am_pm=time1.am_pm))
+            output.push(_replace(weekday, {hour:time1.hour, minute:time1.minute, am_pm:time1.am_pm}))
             output.push(range)
         return output
 
@@ -218,11 +237,11 @@ time_range = (unstrict_time, strict_time, date, reverse) ->
     endtime = date
     starttime = endtime
     if unstrict_time
-        starttime = starttime._replace(hour=Number(unstrict_time[0]))
+        starttime = _replace(starttime, {hour:Number(unstrict_time[0])})
         if date.am_pm
-            starttime = starttime._replace(hour=starttime.hour + date.am_pm, am_pm=date.am_pm)
+            starttime = _replace(starttime, {hour: starttime.hour + date.am_pm, am_pm:date.am_pm})
     else
-        starttime = starttime._replace(hour=strict_time.hour, minute=strict_time.minute)
+        starttime = _replace(starttime, {hour: strict_time.hour, minute: strict_time.minute})
 
     time_range = timedelta_from_Date(starttime, endtime)
     if reverse
@@ -247,14 +266,14 @@ through_range = (time, weekday1, weekday2, month, date, beginning) ->
             temp = Date(month, day)
             if temp.weekday and temp.weekday in range(weekday1, weekday2 + 1)
                 if time
-                    output.push(temp.update(time))
+                    output.push(_replace(temp, time))
                 else
                     output.push(temp)
         return output
 
 
 # --------------- The lists ------------------
-functions = {
+functions =
     # Groups
     "MonthString": month_to_number,
     "AMPM": am_pm,
@@ -288,11 +307,11 @@ functions = {
     "TimeRange": time_range,
     "AltTimeRange": alt_time_range,
     "_default": (_) ->
-        if _? and (not (_ instanceof Array ) or Math.max([item? for item in _]) == 1)  then _ else undefined
+        if any(_)  then _ else undefined
     "_default_type": (_...) ->
         if _?
             for item in _
                  if item?
                      item
-    , "_default_group": (_) -> if _? then _[0]
-}
+    , "_default_group": (_...) -> if _? then _[0]
+
