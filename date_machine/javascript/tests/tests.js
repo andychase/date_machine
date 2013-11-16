@@ -605,4 +605,8 @@
 
   console.log(this.date_machine('8 pm Thursday, 7:30 and 10 pm Friday-Saturday, Sept. 13-15.'));
 
+  test("hello test", function() {
+    return ok(1 === 1, "passed!");
+  });
+
 }).call(this);
