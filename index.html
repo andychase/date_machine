@@ -42,7 +42,7 @@ ul { list-style: none; padding-left: 0; }
 }
 table { border-collapse:collapse; width: 100%; }
 table, th, td { border: 1px solid black; padding: 3px;}
-       th     { background-color: rgba(0, 0, 0, 0.21); font-weight: 400; width: 115px; }
+       th     { background-color: rgba(0, 0, 0, 0.21); font-weight: 400; width: 115px; text-align: left; }
 a {text-decoration: none; color: black;}
 a:hover {background-color: rgba(0, 0, 0, 0.21);}
 .build_status:hover, .gh-btn:hover {background-color:transparent;}
@@ -70,14 +70,19 @@ a:hover {background-color: rgba(0, 0, 0, 0.21);}
             input = document.getElementById('test_input');
             results_header = document.getElementById('results_header');
             results_data = document.getElementById('results_data');
-        try {
-            var output = parser(input.value)
-            results_header.style.display = 'inherit';
-            results_data.innerHTML = obj_to_table(output);
-         } catch(err) {
-              results_header.style.display = 'none';
-              results_data.innerHTML = '';
-          }
+            if (input.value.trim().length == 0) {
+                results_header.style.display = 'none';
+                results_data.innerHTML = '';
+            } else {
+                try {
+                    var output = this.date_machine(input.value)
+                    results_header.style.display = 'inherit';
+                    results_data.innerHTML = obj_to_table(output);
+                 } catch(err) {
+                      results_header.style.display = 'none';
+                      results_data.innerHTML = '';
+                 }
+            }
         }
         </script>
 </head>
