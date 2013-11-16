@@ -206,7 +206,7 @@ slash = (month, day, year, time) ->
 
 month_range = (month, date_a, date_b) ->
     output = []
-    for day in [date_a[0] .. date_b[0] + 1]
+    for day in [date_a[0] .. date_b[0]]
         output.push(basic_text(undefined, undefined, undefined, month, day, undefined))
     return output
 
@@ -262,7 +262,7 @@ through_range = (time, weekday1, weekday2, month, date, beginning) ->
     output = []
     if month and date and beginning and weekday1
         ending = Date(month, day)
-        for day in range(beginning.day, ending.day + 1)
+        for day in [beginning.day .. ending.day]
             temp = Date(month, day)
             if temp.weekday and temp.weekday in range(weekday1, weekday2 + 1)
                 if time
