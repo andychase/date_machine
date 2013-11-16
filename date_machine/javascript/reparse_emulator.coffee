@@ -30,10 +30,12 @@ remove_lower_overlapping = (current, higher) ->
 
     return current
 
+as_list = (_) -> [].concat(_)
 get_results = (_) -> (_[i][2] for i of _)
 any = (_) -> _? and ((not (_ instanceof Array )) or _.filter((a)->a?).length > 0)
 get_best = (_) ->
     get_results(_.reduce(remove_lower_overlapping, []))
+
 
 reparse_emulator = (take, function_name, tree, matches, functions) ->
   results = []
@@ -69,7 +71,7 @@ this.date_machine = (input) ->
       # Get start of match
       start = regex.lastIndex - o[0].length
       if any(matcher_output)
-        out.push [pattern.order, [start, end, matcher_output]]
+        out.push [pattern.order, [start, end, as_list(matcher_output)]]
   return get_best(out.sort((a,b)->a[0]-b[0]))
 
-console.log this.date_machine('8 pm Thursday, 7:30 and 10 pm Friday-Saturday, Sept. 13-15.')
+console.log this.date_machine('01/1/2011')

@@ -17,6 +17,8 @@ _replace = (_old, _new) ->
     second: if _new.second? then _new.second else _old.second
     am_pm:  if _new.am_pm? then _new.am_pm else _old.am_pm
 
+in_array = (arr, _) -> arr.indexOf(_) != -1
+
 progressive_match = (string, possibilities) ->
     part = ""
     if not string? then return
@@ -119,25 +121,13 @@ month_type = (input...) ->
             return Number(value)
 
 
-date_number = (Day, Abbr) ->
-    if Day
-        return Number(Day)
+date_number = (Day, Abbr) -> if Day? then Number(Day)
 
+month_number = (MonthNum) -> Number(MonthNum)
 
-month_number = (MonthNum) ->
-    return Number(MonthNum)
+month_num_type = (input...) -> Number(input[0])
 
-
-month_num_type = (input...) ->
-    if type(input) is list
-        return Number(input[0])
-    else
-        return Number(input)
-
-
-year = (Year) ->
-    if Year
-        return Number(Year)
+year = (Year) -> if Year? then Number(Year)
 
 # Patterns #
 
@@ -161,14 +151,12 @@ weekday_range_with_time = (time1, time2, [weekday1], [weekday2], MonthRange) ->
     return output
 
 
-weekday_range_with_extra = ( \
-        time, and_time, weekday_start, weekday_end,
-        extra_time, extra_weekday, MonthRange) ->
+weekday_range_with_extra = ( time, and_time, weekday_start, weekday_end, extra_time, extra_weekday, MonthRange) ->
     output = []
     if time
         for date in MonthRange
             if date.weekday?
-                if date.weekday in range(weekday_start, weekday_end + 1)
+                if date.weekday in [weekday_start .. weekday_end]
                     output.push(_replace(date, time))
                     if and_time
                         output.push(_replace(date, and_time))
@@ -178,7 +166,7 @@ weekday_range_with_extra = ( \
 
 
 weekday_range_with_extra_backwards = (extra_time, extra_weekday, time, weekday_start, weekday_end, MonthRange ) ->
-    return weekday_range_with_extra( time[0], time[1], weekday_start, weekday_end, extra_time, extra_weekday, MonthRange )
+    return weekday_range_with_extra(time[0], time[1], weekday_start, weekday_end, extra_time, extra_weekday, MonthRange )
 
 
 reverse_basic_text = (time, day, month, year) ->
@@ -188,6 +176,10 @@ reverse_basic_text = (time, day, month, year) ->
 basic_text = (time, first_second, weekday, month, day, year) ->
     if not day?
         day = 1
+    if (day instanceof Array) and day.length == 1
+      day = day[0]
+    if (year instanceof Array) and year.length == 1
+      year = year[0]
     if not time?
         return Date(year, month, day)
     if time?
@@ -264,7 +256,7 @@ through_range = (time, weekday1, weekday2, month, date, beginning) ->
         ending = Date(month, day)
         for day in [beginning.day .. ending.day]
             temp = Date(month, day)
-            if temp.weekday and temp.weekday in range(weekday1, weekday2 + 1)
+            if temp.weekday and in_array([weekday1 .. weekday2], temp.weekday)
                 if time
                     output.push(_replace(temp, time))
                 else
@@ -307,11 +299,10 @@ functions =
     "TimeRange": time_range,
     "AltTimeRange": alt_time_range,
     "_default": (_) ->
-        if any(_)  then _ else undefined
+        if any(_) then _ else undefined
     "_default_type": (_...) ->
         if _?
             for item in _
                  if item?
                      item
     , "_default_group": (_...) -> if _? then _[0]
-
