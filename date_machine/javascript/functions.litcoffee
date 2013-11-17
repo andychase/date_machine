@@ -407,9 +407,9 @@ if value is defined, and there is array with even a single defined value then re
             "_default": (_) ->
                 if any(_) then _ else undefined
 
-```Type``` there is used to mean collection of expressions.
-There only one will matching type, so you just have to find
-it and return it.
+Recall ```Type``` here means collection of expressions.
+There only one will matching expression due to the way regex works ```"(a|b)```,
+so you just have to find it and return it.
 
             "_default_type": (_...) ->
                 if _?
