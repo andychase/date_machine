@@ -40,7 +40,3 @@ so they are regex objects instead of simple strings.
 
         for pattern in parser_description
           pattern.regex = new RegExp(pattern.regex, "gi")
-
-This is just for testing
-
-        console.log this.date_machine('01/1/2011')

@@ -14,29 +14,29 @@ The best match is found by removing results that overlap with higher-ordered res
         overlapping_at = (start, end, current) ->
             output = []
             for current_index of current
-                [_, c_start, c_end] = current[current_index]
+                [_, c_start, c_end, _] = current[current_index]
 
                 if overlapping(c_start, c_end, start, end)
                     output.push current_index
             return output
 
         remove_lower_overlapping = (current, higher) ->
-            for [match, h_start, h_end] in higher
-                overlaps = overlapping_at(h_start, h_end, current)
-                for overlap in overlaps
-                    delete current[overlap]
-                if overlaps.length > 0
-                    # Keeps order in place
-                    current.splice(overlaps[0], 0, [match, h_start, h_end])
-                else
-                    current.push([match, h_start, h_end])
+            [order, h_start, h_end, match] = higher
+            overlaps = overlapping_at(h_start, h_end, current)
+            for overlap in overlaps
+                current.splice(overlap, 1)
+            if overlaps.length > 0
+                # Keeps order in place
+                current.splice(overlaps[0], 0, higher)
+            else
+                current.push(higher)
 
             return current
 
 Helper functions
 
         as_list = (_) -> [].concat(_)
-        get_results = (_) -> (_[i][2] for i of _)
+        get_results = (_) -> (i[3] for i in _)
         any = (_) -> _? and ((not (_ instanceof Array )) or _.filter((a)->a?).length > 0)
         get_best = (_) ->
             get_results(_.reduce(remove_lower_overlapping, []))
@@ -55,9 +55,9 @@ This is the actual parser function, ```this.date_machine``` should be the only t
                 while (matches = regex.exec(input)) isnt null
                     matcher_output = reparse_emulator(take, function_name, tree, get_capture_groups(matches), functions)
 
-                    end = regex.lastIndex
                     start = regex.lastIndex - matched_text_length(matches)
+                    end = regex.lastIndex - 1
                     if any(matcher_output)
-                        date_machine_output.push [pattern.order, [start, end, as_list(matcher_output)]]
+                        date_machine_output.push [pattern.order, start, end, as_list(matcher_output)]
 
               return get_best(sort_by_order_ascending(date_machine_output))

@@ -154,12 +154,14 @@ but later on I want to use them as much as possible to make my intentions clear.
         midnight = (hour, AMPM) -> hour == 12 and AMPM == 0
 
         time_expression = (Hour, Minute, Second, AMPM, SpecialTimeText ) ->
+            if not Hour? and not Minute? and not Second? and not AMPM? and not SpecialTimeText?
+                return
             if SpecialTimeText
                 if SpecialTimeText.toLowerCase() == "noon"
-                    return Date(hour)
+                    return {hour: 12}
                 if SpecialTimeText.toLowerCase() == "midnight"
-                    return Date(hour)
-            d = Date()
+                    return {hour: 0}
+            d = {}
             if Hour
                 d.hour = Number(Hour)
             if Minute
@@ -175,30 +177,23 @@ but later on I want to use them as much as possible to make my intentions clear.
                     else
                         d.hour = d.hour + AMPM
                 d.am_pm = AMPM
-            if [d.hour, d.minute, d.second] != [undefined, undefined, undefined]
-                return d
-            else
+            if [d.hour, d.minute, d.second] == [undefined, undefined, undefined]
                 return undefined
+            return d
 
 
         time_and_time = (Hour, Minute, AMPM1, Hour2, Minute2, AMPM2) ->
-            if AMPM2 is not ""
+            if AMPM2?
                 AMPM2 = am_pm(AMPM2)
-            if not AMPM1 and not AMPM2
+            if not AMPM1? and not AMPM2?
                 return [time_expression(Hour, Minute), time_expression(Hour2, Minute2)]
-            else if not AMPM1
+            else if not AMPM1?
                 return [time_expression(Hour, Minute, undefined, AMPM2),
                         time_expression(Hour2, Minute2, undefined, AMPM2)]
-            else if not AMPM2
+            else if not AMPM2?
                 return [time_expression(Hour, Minute, undefined, AMPM1),
                         time_expression(Hour2, Minute2, undefined, AMPM1)]
 
-
-### Date Functions
-
-Again, titled copied from Python source.
-I'm really not sure what I was thinking. 
-Isn't everything in here a function relating to dates?
 
         month_type = (input...) ->
             for value in input
@@ -210,12 +205,14 @@ Isn't everything in here a function relating to dates?
 
         month_number = (MonthNum) -> Number(MonthNum)
 
-There's that use of the word ```type``` again.
-Based on what's here I don't know if it's correctly used or not.
-
         month_num_type = (input) -> Number(input)
 
         year = (Year) -> if Year? then Number(Year)
+
+        get_first_defined = (_) ->
+          for item in _
+            if item?
+              return item
 
 ### Patterns
 
@@ -228,31 +225,28 @@ so I need to search for it and find it.
 
         weekday_range_with_time = (time1, time2, [weekday1], [weekday2], MonthRange) ->
             output = []
-            for time in time1
-              if time?
-                time1 = time
-                break
-            for time in time2
-              if time?
-                time2 = time
-                break
 
-            if time1
+            # Get first undefined value
+            # Since only one value in list will be defined (if any)
+            time1 = get_first_defined(time1)
+            time2 = get_first_defined(time2)
+
+            if time1?
                 for date in MonthRange
                     output.push(_replace(date, time1))
-                    if time2
+                    if time2?
                         output.push(_replace(date, time2))
             return output
 
 
         weekday_range_with_extra = ( time, and_time, weekday_start, weekday_end, extra_time, extra_weekday, MonthRange) ->
             output = []
-            if time
+            if time?
                 for date in MonthRange
                     if date.weekday?
                         if date.weekday in [weekday_start .. weekday_end]
                             output.push(_replace(date, time))
-                            if and_time
+                            if and_time?
                                 output.push(_replace(date, and_time))
                         if date.weekday == extra_weekday
                             output.push(_replace(date, extra_time))
@@ -264,7 +258,7 @@ so I need to search for it and find it.
 
 
         reverse_basic_text = (time, day, month, year) ->
-            return basic_text(time, day, month, year)
+            return basic_text(time, undefined, undefined, month, day, year)
 
 
         basic_text = (time, first_second, weekday, month, day, year) ->
@@ -276,7 +270,7 @@ so I need to search for it and find it.
               year = year[0]
             if not time?
                 return Date(year, month, day)
-            if time?
+            else
                 year: year
                 month: month
                 day: day
@@ -299,7 +293,7 @@ so I need to search for it and find it.
 
         multi_time = (time1, BasicText) ->
             output = []
-            if time1 and BasicText
+            if time1? and BasicText?
                 output.push(_replace(BasicText, time1))
                 output.push(BasicText)
                 return output
@@ -311,7 +305,7 @@ so I need to search for it and find it.
 
         weekday_range_with_time_range = (time1, weekday_range) ->
             output = []
-            if time1 and weekday_range
+            if time1? and weekday_range?
                 range = timedelta_from_Date(_replace(weekday_range[0], time1), weekday_range[0])
                 for weekday in weekday_range
                     output.push(_replace(weekday, {hour:time1.hour, minute:time1.minute, am_pm:time1.am_pm}))
@@ -372,7 +366,7 @@ string that represents it in the parse tree.
             "Chase Date": date_number,
             "Chase Month": month_number,
             "Steve Valaitis": time_expression,
-            "Greg Burns": time_expression,
+            "Greg Burns": (hour, am_pm) -> time_expression(hour, null, null, am_pm, null),
             "Greg Burns UnstrictTime:": time_expression,
             "Steve Valaitis2": military_time,
             "Steve Valaitis And Time": time_and_time,
@@ -411,6 +405,6 @@ it and return it.
                 if _?
                     for item in _
                          if item?
-                             item
+                             return item
 
-            "_default_group": (_...) -> if _? then _[0]
+            "_default_group": (_...) -> if _[0]? then _[0]
