@@ -3,7 +3,7 @@ import sys
 sys.path.append('..')
 from date_machine import build_date_parser
 from test.evaluate import evaluate_msg
-from javascript import generate_js
+from javascript.generate_javascript import generate_js
 
 modes = {
     'python': reparse.basic_parser,
