@@ -408,7 +408,7 @@ if value is defined, and there is array with even a single defined value then re
                 if any(_) then _ else undefined
 
 ```Type``` there is used to mean collection of expressions.
-I know that because only one will match, so you just have to find
+There only one will matching type, so you just have to find
 it and return it.
 
             "_default_type": (_...) ->
