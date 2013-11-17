@@ -18,9 +18,6 @@
 
         test "date tests", =>
 
-            ok functions["time"]
-
-
             date_test '01/1/2011',
                 day: 1
                 month: 1
