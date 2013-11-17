@@ -1,12 +1,62 @@
-There is a slight difference in js functions vs python ones
+### This file
+
+The logic in this file builds the date object.
+
+If you compare this file to the ```python/functions.py``` file
+you'll notice they are very similiar. That's intentional,
+this file was ported over and kept such that it would be somewhat
+easy to port changes back and forth.
+
+There is a slight difference in these javascript functions vs python ones
 Normally types would receive 1 array, but instead it receives each "subtype" as arguments
-Just use ... splat to get all arguments as an array
+I just use ... splat to get all arguments as an array.
+
+### Terminology
+
+Because it's so confusing here is a list of the different levels to refer to:
+
+- Groups 
+  -- This is the capture groups. The lowest level. ```([0-9])``` etc.
+  "Day", "Month", etc.
+- Expressions 
+  -- This is an expression with multiple capture groups. They're usually named
+  after the person that wrote them. "Greg Burns", etc.
+  
+  In Python, Expressions functions have nice named arguments, def expr(Day, Month, Year),
+  but Javascript doesn't support this.
+- Type
+  -- This is a collection of expressions with a common goal.
+  Months (Jan, 0-12, January, etc.). 
+- Patterns
+  -- This is a collection of types ```<Month>/<Day>/<Year>```
+  Patterns can have 
+
+### Warning
+
+A note about the above list. Types and Groups are commonly mixed up.
+I think groups SHOULD be the lowest 
+(because they are the actual capture *groups* in regular expressions)
+but a group of expressions also makes sense.
+
+It's so confusing that there are at least a couple places here that I've
+also mixed myself up and probably in the documentation for RE|PARSE as well.
+
+---
+
+First up is a simple function to define a Date object.
+I use a simple hash table because it's language agnostic,
+serializable, and doesn't complain when you don't have part of it quite yet
+(like a year).
 
 
         Date = (year, month, day) ->
           year: year
           month: month
           day: day
+
+I use named tuples in python, and _replace mirrors the functionality of 
+date._replace.. that is that it returns a copy of the date with only
+certain things changed and leaves the old well enough alone.
 
         _replace = (_old, _new) ->
             year:   if _new.year? then _new.year else _old.year
@@ -17,10 +67,20 @@ Just use ... splat to get all arguments as an array
             second: if _new.second? then _new.second else _old.second
             am_pm:  if _new.am_pm? then _new.am_pm else _old.am_pm
 
+I represent lengths of dates (i.e. Thursday, 1-2pm) with a timedelta that goes right
+after the date hash in the result array.
+
+In Javascript, I'm just going to represent a timedelta with a hash.
+
         timedelta_from_Date = (start_time, end_time) ->
 
+This is just a helper function
 
         in_array = (arr, _) -> arr.indexOf(_) != -1
+
+```progressive_match``` is useful for matching abbreviations
+and full spellings. Functions like this could be useful
+to help parse fuzzy matches in the future (i.e. misspellings of months).
 
         progressive_match = (string, possibilities) ->
             part = ""
@@ -33,7 +93,12 @@ Just use ... splat to get all arguments as an array
                         matches.push(month)
                 if matches.length == 1
                     return possibilities[matches[0]]
-        ## Types
+### Types
+
+The heading above is the heading in the python source.
+I actually don't know if it's referring to collections of expressions
+or capture groups.
+
         month_to_number = (month_string) ->
           months =
               "january": 1
@@ -62,20 +127,31 @@ Just use ... splat to get all arguments as an array
             }
             return progressive_match(WeekdayString, weekday_list)
 
+I serialize am_pm by converting the hours to milliary/24-hour time format.
+I also include ```am_pm: 'pm'``` in the date format to show that that transformation
+was done. Making that clear helpful because if you get a time like 1, with no ```am_pm```
+designation you might want to assume pm and add 12. This is not done in the libary because
+date_machine strives for honesty, not guesswork.
+
         am_pm = (input) ->
             if not input?
               return
             if input.toLowerCase() == "am" then 0
             else if input.toLowerCase() == "pm" then 12
 
+You can see in this function that I try not to repeat logic and use other
+functions. In this case I might have been able to simply put time_expression
+in the functions hash/object, but in python it makes a difference due to named arguments.
+I'm going to leave it as-is for clarity.
 
         military_time = (MilHour, MilMinute, MilSecond ) ->
             return time_expression(MilHour, MilMinute, MilSecond, undefined)
 
+Here is the ampm conversion. I omit returns when the expressions are simple,
+but later on I want to use them as much as possible to make my intentions clear.
 
         noon = (hour, AMPM) -> hour == 12 and AMPM == 12
         midnight = (hour, AMPM) -> hour == 12 and AMPM == 0
-
 
         time_expression = (Hour, Minute, Second, AMPM, SpecialTimeText ) ->
             if SpecialTimeText
@@ -101,6 +177,8 @@ Just use ... splat to get all arguments as an array
                 d.am_pm = AMPM
             if [d.hour, d.minute, d.second] != [undefined, undefined, undefined]
                 return d
+            else
+                return undefined
 
 
         time_and_time = (Hour, Minute, AMPM1, Hour2, Minute2, AMPM2) ->
@@ -116,7 +194,11 @@ Just use ... splat to get all arguments as an array
                         time_expression(Hour2, Minute2, undefined, AMPM1)]
 
 
-        # Date Functions
+### Date Functions
+
+Again, titled copied from Python source.
+I'm really not sure what I was thinking. 
+Isn't everything in here a function relating to dates?
 
         month_type = (input...) ->
             for value in input
@@ -128,12 +210,21 @@ Just use ... splat to get all arguments as an array
 
         month_number = (MonthNum) -> Number(MonthNum)
 
-        month_num_type = (input...) -> Number(input[0])
+There's that use of the word ```type``` again.
+Based on what's here I don't know if it's correctly used or not.
+
+        month_num_type = (input) -> Number(input)
 
         year = (Year) -> if Year? then Number(Year)
 
-        # Patterns #
+### Patterns
 
+There's a some unwrapping values out of arrays here.
+Because of the namedarguments issue functions receive a lot more
+arrays then in Python and so they need to be unwrapped.
+
+Sometimes the value is [undefined, undefined, <value>],
+so I need to search for it and find it.
 
         weekday_range_with_time = (time1, time2, [weekday1], [weekday2], MonthRange) ->
             output = []
@@ -267,7 +358,11 @@ Just use ... splat to get all arguments as an array
                 return output
 
 
-        # --------------- The lists ------------------
+### The function list
+
+This hash/object matches all the functions with a
+string that represents it in the parse tree.
+
         functions =
             # Groups
             "MonthString": month_to_number,
@@ -301,11 +396,21 @@ Just use ... splat to get all arguments as an array
             "ThroughRange": through_range,
             "TimeRange": time_range,
             "AltTimeRange": alt_time_range,
+
+This is default expression or pattern. ```any``` means
+if value is defined, and there is array with even a single defined value then return true.
+
             "_default": (_) ->
                 if any(_) then _ else undefined
+
+```Type``` there is used to mean collection of expressions.
+I know that because only one will match, so you just have to find
+it and return it.
+
             "_default_type": (_...) ->
                 if _?
                     for item in _
                          if item?
                              item
+
             "_default_group": (_...) -> if _? then _[0]
