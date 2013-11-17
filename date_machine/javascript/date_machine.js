@@ -308,9 +308,9 @@
   };
 
   month_range = function(month, date_a, date_b) {
-    var day, output, _i, _ref, _ref1;
+    var day, output, _i;
     output = [];
-    for (day = _i = _ref = date_a[0], _ref1 = date_b[0]; _ref <= _ref1 ? _i <= _ref1 : _i >= _ref1; day = _ref <= _ref1 ? ++_i : --_i) {
+    for (day = _i = date_a; date_a <= date_b ? _i <= date_b : _i >= date_b; day = date_a <= date_b ? ++_i : --_i) {
       output.push(basic_text(void 0, void 0, void 0, month, day, void 0));
     }
     return output;

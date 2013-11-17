@@ -220,6 +220,9 @@ but later on I want to use them as much as possible to make my intentions clear.
 
         year = (Year) -> if Year? then Number(Year)
 
+Sometimes the value is [undefined, undefined, <value>],
+so I need to search for it and find it.
+
         get_first_defined = (_) ->
           for item in _
             if item?
@@ -230,9 +233,6 @@ but later on I want to use them as much as possible to make my intentions clear.
 There's a some unwrapping values out of arrays here.
 Because of the namedarguments issue functions receive a lot more
 arrays then in Python and so they need to be unwrapped.
-
-Sometimes the value is [undefined, undefined, <value>],
-so I need to search for it and find it.
 
         weekday_range_with_time = (time1, time2, [weekday1], [weekday2], MonthRange) ->
             output = []
@@ -297,7 +297,7 @@ so I need to search for it and find it.
 
         month_range = (month, date_a, date_b) ->
             output = []
-            for day in [date_a[0] .. date_b[0]]
+            for day in [date_a .. date_b]
                 output.push(basic_text(undefined, undefined, undefined, month, day, undefined))
             return output
 

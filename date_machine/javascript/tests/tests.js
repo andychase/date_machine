@@ -309,9 +309,9 @@
   };
 
   month_range = function(month, date_a, date_b) {
-    var day, output, _i, _ref, _ref1;
+    var day, output, _i;
     output = [];
-    for (day = _i = _ref = date_a[0], _ref1 = date_b[0]; _ref <= _ref1 ? _i <= _ref1 : _i >= _ref1; day = _ref <= _ref1 ? ++_i : --_i) {
+    for (day = _i = date_a; date_a <= date_b ? _i <= date_b : _i >= date_b; day = date_a <= date_b ? ++_i : --_i) {
       output.push(basic_text(void 0, void 0, void 0, month, day, void 0));
     }
     return output;
@@ -685,25 +685,33 @@
   });
 
   test("date tests", function() {
-    ok(functions["time"]);
     date_test('01/1/2011', {
       day: 1,
       month: 1,
       year: 2011
     });
-    date_test('All day Thursday-Sunday, Sept. 20-23., Friday September 21', {
-      day: 20,
-      month: 9
-    }, {
-      day: 21,
-      month: 9
-    }, {
-      day: 22,
-      month: 9
-    }, {
-      day: 23,
-      month: 9
-    });
+    date_raw_test('All day Thursday-Sunday, Sept. 20-23., Friday September 21', [
+      [
+        {
+          day: 20,
+          month: 9
+        }, {
+          day: 21,
+          month: 9
+        }, {
+          day: 22,
+          month: 9
+        }, {
+          day: 23,
+          month: 9
+        }
+      ], [
+        {
+          day: 21,
+          month: 9
+        }
+      ]
+    ]);
     date_test('12/3/2012', {
       day: 3,
       month: 12,

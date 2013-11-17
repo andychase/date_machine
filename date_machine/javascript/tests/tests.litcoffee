@@ -24,7 +24,7 @@
                 year: 2011
 
 
-            date_test 'All day Thursday-Sunday, Sept. 20-23., Friday September 21',
+            date_raw_test 'All day Thursday-Sunday, Sept. 20-23., Friday September 21', [[
                     day: 20
                     month: 9
                 ,
@@ -36,6 +36,10 @@
                 ,
                     day: 23
                     month: 9
+                ],[
+                    day: 21
+                    month: 9
+                ]]
 
             date_test '12/3/2012',
                     day: 3
