@@ -7,10 +7,6 @@ you'll notice they are very similiar. That's intentional,
 this file was ported over and kept such that it would be somewhat
 easy to port changes back and forth.
 
-There is a slight difference in these javascript functions vs python ones
-Normally types would receive 1 array, but instead it receives each "subtype" as arguments
-I just use ... splat to get all arguments as an array.
-
 ### Terminology
 
 Because it's so confusing here is a list of the different levels to refer to:
@@ -29,7 +25,6 @@ Because it's so confusing here is a list of the different levels to refer to:
   Months (Jan, 0-12, January, etc.). 
 - Patterns
   -- This is a collection of types ```<Month>/<Day>/<Year>```
-  Patterns can have 
 
 ### Warning
 
