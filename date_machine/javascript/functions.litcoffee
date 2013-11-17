@@ -408,7 +408,7 @@ if value is defined, and there is array with even a single defined value then re
                 if any(_) then _ else undefined
 
 Recall ```Type``` here means collection of expressions.
-There only one will matching expression due to the way regex works ```"(a|b)```,
+There only one will matching expression due to the way regex works ```(a)|(b)```,
 so you just have to find it and return it.
 
             "_default_type": (_...) ->
