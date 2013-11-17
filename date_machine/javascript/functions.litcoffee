@@ -101,9 +101,6 @@ to help parse fuzzy matches in the future (i.e. misspellings of months).
                     return possibilities[matches[0]]
 ### Types
 
-The heading above is the heading in the python source.
-I actually don't know if it's referring to collections of expressions
-or capture groups.
 
         month_to_number = (month_string) ->
           months =
