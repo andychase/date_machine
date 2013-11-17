@@ -38,8 +38,8 @@ also mixed myself up and probably in the documentation for RE|PARSE as well.
 
 ---
 
-I use named tuples in python, and _replace mirrors the functionality of 
-date._replace.. that is that it returns a copy of the date with only
+I use named tuples in python, and ```_replace``` mirrors the functionality of 
+```date._replace```.. that is that it returns a copy of the date with only
 certain things changed and leaves the old well enough alone.
 
         _replace = (_old, _new) ->
