@@ -90,10 +90,12 @@
                     month: 10
                     day: 31
                     hour: 19
-                    am_pm: 2
+                    am_pm: 12
                 ,
                     timedelta: true
                     hours: 2
+                    minutes: 0
+                    seconds: 0
             date_test 'Sun, 06/16/2013 - 6:00pm',
                     hour: 18
                     month: 6

@@ -43,17 +43,6 @@ also mixed myself up and probably in the documentation for RE|PARSE as well.
 
 ---
 
-First up is a simple function to define a Date object.
-I use a simple hash table because it's language agnostic,
-serializable, and doesn't complain when you don't have part of it quite yet
-(like a year).
-
-
-        Date = (year, month, day) ->
-          year: year
-          month: month
-          day: day
-
 I use named tuples in python, and _replace mirrors the functionality of 
 date._replace.. that is that it returns a copy of the date with only
 certain things changed and leaves the old well enough alone.
@@ -71,8 +60,30 @@ I represent lengths of dates (i.e. Thursday, 1-2pm) with a timedelta that goes r
 after the date hash in the result array.
 
 In Javascript, I'm just going to represent a timedelta with a hash.
+I make a pretty dumb assumption that timedelta will only cross hour/minutes/second boundaries.
 
         timedelta_from_Date = (start_time, end_time) ->
+            seconds_difference = 0
+            if start_time.hour? and end_time.hour?
+              seconds_difference += 60*60*(end_time.hour - start_time.hour)
+
+              if start_time.minute? and end_time.minute?
+                seconds_difference += 60*(end_time.minute - start_time.minute)
+
+                if start_time.second? and end_time.second?
+                  seconds_difference += end_time.second - start_time.second
+
+            hours = Math.floor(seconds_difference/60/60)
+            minutes = Math.floor(seconds_difference/60) - (hours * 60)
+            seconds = seconds_difference - (minutes * 60) - (hours * 60 * 60)
+
+            return {
+               timedelta: true
+               hours: hours
+               minutes: minutes
+               seconds: seconds
+            }
+
 
 This is just a helper function
 
@@ -269,7 +280,7 @@ so I need to search for it and find it.
             if (year instanceof Array) and year.length == 1
               year = year[0]
             if not time?
-                return Date(year, month, day)
+                return {year: year, month: month, day: day}
             else
                 year: year
                 month: month
@@ -341,9 +352,13 @@ so I need to search for it and find it.
         through_range = (time, weekday1, weekday2, month, date, beginning) ->
             output = []
             if month and date and beginning and weekday1
-                ending = Date(month, day)
+                ending =
+                    month: month
+                    day: date
                 for day in [beginning.day .. ending.day]
-                    temp = Date(month, day)
+                    temp =
+                        month: month
+                        day: date
                     if temp.weekday and in_array([weekday1 .. weekday2], temp.weekday)
                         if time
                             output.push(_replace(temp, time))
