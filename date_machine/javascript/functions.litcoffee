@@ -142,19 +142,21 @@ date_machine strives for honesty, not guesswork.
             if input.toLowerCase() == "am" then 0
             else if input.toLowerCase() == "pm" then 12
 
-You can see in this function that I try not to repeat logic and use other
-functions. In this case I might have been able to simply put time_expression
-in the functions hash/object, but in python it makes a difference due to named arguments.
-I'm going to leave it as-is for clarity.
+I try not to repeat logic and use other functions when possible.
+I could put ```"Steve Valaitis2": time_expression``` to avoid this,
+but I wrote it out to show that nothing special happens with 24-hour/military time.
 
         military_time = (MilHour, MilMinute, MilSecond ) ->
             return time_expression(MilHour, MilMinute, MilSecond, undefined)
 
-Here is the ampm conversion. I omit returns when the expressions are simple,
+Here is the am/pm conversion. I omit returns when the expressions are simple,
 but later on I want to use them as much as possible to make my intentions clear.
 
         noon = (hour, AMPM) -> hour == 12 and AMPM == 12
         midnight = (hour, AMPM) -> hour == 12 and AMPM == 0
+
+This function gets called pretty often, I'd consider it the bulk
+of the output logic.
 
         time_expression = (Hour, Minute, Second, AMPM, SpecialTimeText ) ->
             if not Hour? and not Minute? and not Second? and not AMPM? and not SpecialTimeText?
@@ -184,7 +186,6 @@ but later on I want to use them as much as possible to make my intentions clear.
                 return undefined
             return d
 
-
         time_and_time = (Hour, Minute, AMPM1, Hour2, Minute2, AMPM2) ->
             if AMPM2?
                 AMPM2 = am_pm(AMPM2)
@@ -212,8 +213,10 @@ but later on I want to use them as much as possible to make my intentions clear.
 
         year = (Year) -> if Year? then Number(Year)
 
-Sometimes the value is [undefined, undefined, <value>],
-so I need to search for it and find it.
+Sometimes the value is ```[undefined, undefined, <value>]```,
+so I need to search for it and find it. There's enough
+of these smaller expressions scattered around that moving them
+all to one place might be good.
 
         get_first_defined = (_) ->
           for item in _
@@ -223,8 +226,8 @@ so I need to search for it and find it.
 ### Patterns
 
 There's a some unwrapping values out of arrays here.
-Because of the namedarguments issue functions receive a lot more
-arrays then in Python and so they need to be unwrapped.
+Because there's no named-arguments, functions receive a lot more
+arrays here then in Python and so they need to be unwrapped.
 
         weekday_range_with_time = (time1, time2, [weekday1], [weekday2], MonthRange) ->
             output = []
