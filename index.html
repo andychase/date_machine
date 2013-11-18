@@ -14,7 +14,7 @@ body { background-color: #3D7194; font-family: "Roboto Slab", Arial, sans-serif;
 h1 { text-shadow: 0 0 1px h1 rgba(0, 0, 0, 0.35); }
 h1 { background-image: url('gear.png'); background-repeat: no-repeat; background-position: left bottom;}
 h1 { padding-left: 75px; position: relative; right: 75px; height: 77px; }
-h2 { position: relative; right: 135px; top: 36pt; width: 120px; height: 24pt; text-align: right; }
+h2 { position: relative; right: 135px; top: 21pt; width: 120px; height: 10pt; text-align: right; }
 h2 { font-size: 12pt; }
 #content {width: 275px; margin: 50px auto 0 auto; }
 #header span {position: relative; bottom: 10px;}
@@ -46,6 +46,7 @@ table, th, td { border: 1px solid black; padding: 3px;}
 a {text-decoration: none; color: black;}
 a:hover {background-color: rgba(0, 0, 0, 0.21);}
 .build_status:hover, .gh-btn:hover {background-color:transparent;}
+pre {margin-top: 18px; font-size: 10pt;}
     </style>
         <script type="text/javascript" src="date_machine.js"></script>
         <script type="text/javascript">
@@ -132,8 +133,16 @@ parser_description = [{"regex": "(?:(?:(?:([0]?[1-9]|1[0-2])[:\\.]([0-5][0-9])(?
             </tr>
         </table>
     </div>
+    <div><h2 id="download">Download</h2>
+        <a href="date_machine.js">.js</a><br />
+        <a href="https://github.com/asperous/date_machine/archive/master.zip">.zip</a>
+    </div>
+    <div><h2 id="usage">Usage</h2>
+        <pre>JS: this.date_machine('Jan 2');
+Py: date_machine.parse('Jan 2')</pre>
+    </div>
     <div>
-        <h2 id="source_download">Source/<br />Download</h2>
+        <h2 id="source_download">Source</h2>
         <iframe src="http://asperous.github.io/github-buttons/github-btn.html?user=asperous&repo=date_machine&type=view&size=large"
                 allowtransparency="true" frameborder="0" scrolling="0" width="170" height="30"></iframe>
         <br />
