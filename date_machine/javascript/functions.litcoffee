@@ -49,7 +49,7 @@ certain things changed and leaves the old well enough alone.
             hour:   if _new.hour? then _new.hour else _old.hour
             minute: if _new.minute? then _new.minute else _old.minute
             second: if _new.second? then _new.second else _old.second
-            am_pm:  if _new.am_pm? then _new.am_pm else _old.am_pm
+            amPm:  if _new.amPm? then _new.amPm else _old.amPm
 
 I represent lengths of dates (i.e. Thursday, 1-2pm) with a timedelta that goes right
 after the date hash in the result array.
@@ -57,20 +57,20 @@ after the date hash in the result array.
 In Javascript, I'm just going to represent a timedelta with a hash.
 I make a pretty dumb assumption that timedelta will only cross hour/minutes/second boundaries.
 
-        timedelta_from_Date = (start_time, end_time) ->
-            seconds_difference = 0
-            if start_time.hour? and end_time.hour?
-              seconds_difference += 60*60*(end_time.hour - start_time.hour)
+        timedeltaFrom_Date = (startTime, endTime) ->
+            secondsDifference = 0
+            if startTime.hour? and endTime.hour?
+              secondsDifference += 60*60*(endTime.hour - startTime.hour)
 
-              if start_time.minute? and end_time.minute?
-                seconds_difference += 60*(end_time.minute - start_time.minute)
+              if startTime.minute? and endTime.minute?
+                secondsDifference += 60*(endTime.minute - startTime.minute)
 
-                if start_time.second? and end_time.second?
-                  seconds_difference += end_time.second - start_time.second
+                if startTime.second? and endTime.second?
+                  secondsDifference += endTime.second - startTime.second
 
-            hours = Math.floor(seconds_difference/60/60)
-            minutes = Math.floor(seconds_difference/60) - (hours * 60)
-            seconds = seconds_difference - (minutes * 60) - (hours * 60 * 60)
+            hours = Math.floor(secondsDifference/60/60)
+            minutes = Math.floor(secondsDifference/60) - (hours * 60)
+            seconds = secondsDifference - (minutes * 60) - (hours * 60 * 60)
 
             return {
                timedelta: true
@@ -82,13 +82,13 @@ I make a pretty dumb assumption that timedelta will only cross hour/minutes/seco
 
 This is just a helper function
 
-        in_array = (arr, _) -> arr.indexOf(_) != -1
+        inArray = (arr, _) -> arr.indexOf(_) != -1
 
-```progressive_match``` is useful for matching abbreviations
+```progressiveMatch``` is useful for matching abbreviations
 and full spellings. Functions like this could be useful
 to help parse fuzzy matches in the future (i.e. misspellings of months).
 
-        progressive_match = (string, possibilities) ->
+        progressiveMatch = (string, possibilities) ->
             part = ""
             if not string? then return
             for character in string.toLowerCase()
@@ -102,7 +102,7 @@ to help parse fuzzy matches in the future (i.e. misspellings of months).
 ### Types
 
 
-        month_to_number = (month_string) ->
+        monthToNumber = (monthString) ->
           months =
               "january": 1
               "february": 2
@@ -116,10 +116,10 @@ to help parse fuzzy matches in the future (i.e. misspellings of months).
               "october": 10
               "november": 11
               "december": 12
-           return progressive_match(month_string, months)
+           return progressiveMatch(monthString, months)
 
-        weekday_to_number = (WeekdayString ) ->
-            weekday_list = {
+        weekdayToNumber = (WeekdayString ) ->
+            weekdayList = {
                 "monday": 0,
                 "tuesday": 1,
                 "wednesday": 2,
@@ -128,26 +128,26 @@ to help parse fuzzy matches in the future (i.e. misspellings of months).
                 "saturday": 5,
                 "sunday": 6,
             }
-            return progressive_match(WeekdayString, weekday_list)
+            return progressiveMatch(WeekdayString, weekdayList)
 
-I serialize am_pm by converting the hours to milliary/24-hour time format.
-I also include ```am_pm: 'pm'``` in the date format to show that that transformation
-was done. Making that clear helpful because if you get a time like 1, with no ```am_pm```
+I serialize amPm by converting the hours to milliary/24-hour time format.
+I also include ```amPm: 'pm'``` in the date format to show that that transformation
+was done. Making that clear helpful because if you get a time like 1, with no ```amPm```
 designation you might want to assume pm and add 12. This is not done in the libary because
-date_machine strives for honesty, not guesswork.
+dateMachine strives for honesty, not guesswork.
 
-        am_pm = (input) ->
+        amPm = (input) ->
             if not input?
               return
             if input.toLowerCase() == "am" then 0
             else if input.toLowerCase() == "pm" then 12
 
 I try not to repeat logic and use other functions when possible.
-I could put ```"Steve Valaitis2": time_expression``` to avoid this,
+I could put ```"Steve Valaitis2": timeExpression``` to avoid this,
 but I wrote it out to show that nothing special happens with 24-hour/military time.
 
-        military_time = (MilHour, MilMinute, MilSecond ) ->
-            return time_expression(MilHour, MilMinute, MilSecond, undefined)
+        militaryTime = (MilHour, MilMinute, MilSecond ) ->
+            return timeExpression(MilHour, MilMinute, MilSecond, undefined)
 
 Here is the am/pm conversion. I omit returns when the expressions are simple,
 but later on I want to use them as much as possible to make my intentions clear.
@@ -158,7 +158,7 @@ but later on I want to use them as much as possible to make my intentions clear.
 This function gets called pretty often, I'd consider it the bulk
 of the output logic.
 
-        time_expression = (Hour, Minute, Second, AMPM, SpecialTimeText ) ->
+        timeExpression = (Hour, Minute, Second, AMPM, SpecialTimeText ) ->
             if not Hour? and not Minute? and not Second? and not AMPM? and not SpecialTimeText?
                 return
             if SpecialTimeText
@@ -181,35 +181,35 @@ of the output logic.
                         d.hour = 0
                     else
                         d.hour = d.hour + AMPM
-                d.am_pm = AMPM
+                d.amPm = AMPM
             if [d.hour, d.minute, d.second] == [undefined, undefined, undefined]
                 return undefined
             return d
 
-        time_and_time = (Hour, Minute, AMPM1, Hour2, Minute2, AMPM2) ->
+        timeAndTime = (Hour, Minute, AMPM1, Hour2, Minute2, AMPM2) ->
             if AMPM2?
-                AMPM2 = am_pm(AMPM2)
+                AMPM2 = amPm(AMPM2)
             if not AMPM1? and not AMPM2?
-                return [time_expression(Hour, Minute), time_expression(Hour2, Minute2)]
+                return [timeExpression(Hour, Minute), timeExpression(Hour2, Minute2)]
             else if not AMPM1?
-                return [time_expression(Hour, Minute, undefined, AMPM2),
-                        time_expression(Hour2, Minute2, undefined, AMPM2)]
+                return [timeExpression(Hour, Minute, undefined, AMPM2),
+                        timeExpression(Hour2, Minute2, undefined, AMPM2)]
             else if not AMPM2?
-                return [time_expression(Hour, Minute, undefined, AMPM1),
-                        time_expression(Hour2, Minute2, undefined, AMPM1)]
+                return [timeExpression(Hour, Minute, undefined, AMPM1),
+                        timeExpression(Hour2, Minute2, undefined, AMPM1)]
 
 
-        month_type = (input...) ->
+        monthType = (input...) ->
             for value in input
                 if value?
                     return Number(value)
 
 
-        date_number = (Day, Abbr) -> if Day? then Number(Day)
+        dateNumber = (Day, Abbr) -> if Day? then Number(Day)
 
-        month_number = (MonthNum) -> Number(MonthNum)
+        monthNumber = (MonthNum) -> Number(MonthNum)
 
-        month_num_type = (input) -> Number(input)
+        monthNumType = (input) -> Number(input)
 
         year = (Year) -> if Year? then Number(Year)
 
@@ -218,7 +218,7 @@ so I need to search for it and find it. There's enough
 of these smaller expressions scattered around that moving them
 all to one place might be good.
 
-        get_first_defined = (_) ->
+        getFirstDefined = (_) ->
           for item in _
             if item?
               return item
@@ -229,13 +229,13 @@ There's a some unwrapping values out of arrays here.
 Because there's no named-arguments, functions receive a lot more
 arrays here then in Python and so they need to be unwrapped.
 
-        weekday_range_with_time = (time1, time2, [weekday1], [weekday2], MonthRange) ->
+        weekdayRangeWithTime = (time1, time2, [weekday1], [weekday2], MonthRange) ->
             output = []
 
             # Get first undefined value
             # Since only one value in list will be defined (if any)
-            time1 = get_first_defined(time1)
-            time2 = get_first_defined(time2)
+            time1 = getFirstDefined(time1)
+            time2 = getFirstDefined(time2)
 
             if time1?
                 for date in MonthRange
@@ -245,29 +245,29 @@ arrays here then in Python and so they need to be unwrapped.
             return output
 
 
-        weekday_range_with_extra = ( time, and_time, weekday_start, weekday_end, extra_time, extra_weekday, MonthRange) ->
+        weekdayRangeWithExtra = ( time, andTime, weekdayStart, weekdayEnd, extraTime, extraWeekday, MonthRange) ->
             output = []
             if time?
                 for date in MonthRange
                     if date.weekday?
-                        if date.weekday in [weekday_start .. weekday_end]
+                        if date.weekday in [weekdayStart .. weekdayEnd]
                             output.push(_replace(date, time))
-                            if and_time?
-                                output.push(_replace(date, and_time))
-                        if date.weekday == extra_weekday
-                            output.push(_replace(date, extra_time))
+                            if andTime?
+                                output.push(_replace(date, andTime))
+                        if date.weekday == extraWeekday
+                            output.push(_replace(date, extraTime))
             return output
 
 
-        weekday_range_with_extra_backwards = (extra_time, extra_weekday, time, weekday_start, weekday_end, MonthRange ) ->
-            return weekday_range_with_extra(time[0], time[1], weekday_start, weekday_end, extra_time, extra_weekday, MonthRange )
+        weekdayRangeWithExtraBackwards = (extraTime, extraWeekday, time, weekdayStart, weekdayEnd, MonthRange ) ->
+            return weekdayRangeWithExtra(time[0], time[1], weekdayStart, weekdayEnd, extraTime, extraWeekday, MonthRange )
 
 
-        reverse_basic_text = (time, day, month, year) ->
-            return basic_text(time, undefined, undefined, month, day, year)
+        reverseBasicText = (time, day, month, year) ->
+            return basicText(time, undefined, undefined, month, day, year)
 
 
-        basic_text = (time, first_second, weekday, month, day, year) ->
+        basicText = (time, firstSecond, weekday, month, day, year) ->
             if not day?
                 day = 1
             if (day instanceof Array) and day.length == 1
@@ -283,21 +283,21 @@ arrays here then in Python and so they need to be unwrapped.
                 hour: time.hour
                 minute: time.minute
                 second: time.second
-                am_pm: time.am_pm
+                amPm: time.amPm
 
 
         slash = (month, day, year, time) ->
-            return basic_text(time, undefined, undefined, month, day, year)
+            return basicText(time, undefined, undefined, month, day, year)
 
 
-        month_range = (month, date_a, date_b) ->
+        monthRange = (month, dateA, dateB) ->
             output = []
-            for day in [date_a .. date_b]
-                output.push(basic_text(undefined, undefined, undefined, month, day, undefined))
+            for day in [dateA .. dateB]
+                output.push(basicText(undefined, undefined, undefined, month, day, undefined))
             return output
 
 
-        multi_time = (time1, BasicText) ->
+        multiTime = (time1, BasicText) ->
             output = []
             if time1? and BasicText?
                 output.push(_replace(BasicText, time1))
@@ -305,46 +305,46 @@ arrays here then in Python and so they need to be unwrapped.
                 return output
 
 
-        large_repeat_words = ->
+        largeRepeatWords = ->
             return undefined
 
 
-        weekday_range_with_time_range = (time1, weekday_range) ->
+        weekdayRangeWithTimeRange = (time1, weekdayRange) ->
             output = []
-            if time1? and weekday_range?
-                range = timedelta_from_Date(_replace(weekday_range[0], time1), weekday_range[0])
-                for weekday in weekday_range
-                    output.push(_replace(weekday, {hour:time1.hour, minute:time1.minute, am_pm:time1.am_pm}))
+            if time1? and weekdayRange?
+                range = timedeltaFrom_Date(_replace(weekdayRange[0], time1), weekdayRange[0])
+                for weekday in weekdayRange
+                    output.push(_replace(weekday, {hour:time1.hour, minute:time1.minute, amPm:time1.amPm}))
                     output.push(range)
                 return output
 
 
-        time_range = (unstrict_time, strict_time, date, reverse) ->
+        timeRange = (unstrictTime, strictTime, date, reverse) ->
             endtime = date
             starttime = endtime
-            if unstrict_time
-                starttime = _replace(starttime, {hour:Number(unstrict_time[0])})
-                if date.am_pm
-                    starttime = _replace(starttime, {hour: starttime.hour + date.am_pm, am_pm:date.am_pm})
+            if unstrictTime
+                starttime = _replace(starttime, {hour:Number(unstrictTime[0])})
+                if date.amPm
+                    starttime = _replace(starttime, {hour: starttime.hour + date.amPm, amPm:date.amPm})
             else
-                starttime = _replace(starttime, {hour: strict_time.hour, minute: strict_time.minute})
+                starttime = _replace(starttime, {hour: strictTime.hour, minute: strictTime.minute})
 
-            time_range = timedelta_from_Date(starttime, endtime)
+            timeRange = timedeltaFrom_Date(starttime, endtime)
             if reverse
-                time_range = timedelta_from_Date(endtime, starttime)
-            return [starttime, time_range]
+                timeRange = timedeltaFrom_Date(endtime, starttime)
+            return [starttime, timeRange]
 
 
-        alt_time_range = (first_second, weekday, month, day, year, time, unstrict_time, strict_time) ->
-            return time_range(unstrict_time, strict_time, basic_text(time, first_second, weekday, month, day, year), reverse)
+        altTimeRange = (firstSecond, weekday, month, day, year, time, unstrictTime, strictTime) ->
+            return timeRange(unstrictTime, strictTime, basicText(time, firstSecond, weekday, month, day, year), reverse)
 
 
-        until_range = (date1, date2) ->
+        untilRange = (date1, date2) ->
             if date1 and date2
-                return [date1, timedelta_from_Date(date1, date2)]
+                return [date1, timedeltaFrom_Date(date1, date2)]
 
 
-        through_range = (time, weekday1, weekday2, month, date, beginning) ->
+        throughRange = (time, weekday1, weekday2, month, date, beginning) ->
             output = []
             if month and date and beginning and weekday1
                 ending =
@@ -354,7 +354,7 @@ arrays here then in Python and so they need to be unwrapped.
                     temp =
                         month: month
                         day: date
-                    if temp.weekday and in_array([weekday1 .. weekday2], temp.weekday)
+                    if temp.weekday and inArray([weekday1 .. weekday2], temp.weekday)
                         if time
                             output.push(_replace(temp, time))
                         else
@@ -369,37 +369,37 @@ string that represents it in the parse tree.
 
         functions =
             # Groups
-            "MonthString": month_to_number,
-            "AMPM": am_pm,
+            "MonthString": monthToNumber,
+            "AMPM": amPm,
             # Expressions
             "Chase Year": year,
-            "Chase Date": date_number,
-            "Chase Month": month_number,
-            "Steve Valaitis": time_expression,
-            "Greg Burns": (hour, am_pm) -> time_expression(hour, null, null, am_pm, null),
-            "Greg Burns UnstrictTime:": time_expression,
-            "Steve Valaitis2": military_time,
-            "Steve Valaitis And Time": time_and_time,
-            "Text Parts": time_expression,
-            "Michael Ash10": weekday_to_number,
+            "Chase Date": dateNumber,
+            "Chase Month": monthNumber,
+            "Steve Valaitis": timeExpression,
+            "Greg Burns": (hour, amPm) -> timeExpression(hour, null, null, amPm, null),
+            "Greg Burns UnstrictTime:": timeExpression,
+            "Steve Valaitis2": militaryTime,
+            "Steve Valaitis And Time": timeAndTime,
+            "Text Parts": timeExpression,
+            "Michael Ash10": weekdayToNumber,
             # Types
-            "Month": month_type,
-            "MonthNum": month_num_type,
+            "Month": monthType,
+            "MonthNum": monthNumType,
             # Patterns
-            "LargeRepeatWords": large_repeat_words,
-            "BasicText": basic_text,
-            "ReverseBasicText": reverse_basic_text,
+            "LargeRepeatWords": largeRepeatWords,
+            "BasicText": basicText,
+            "ReverseBasicText": reverseBasicText,
             "Slash": slash,
-            "MonthRange": month_range,
-            "MultiTime": multi_time,
-            "WeekdayRangeWithTime": weekday_range_with_time,
-            "WeekdayRangeWithExtra": weekday_range_with_extra,
-            "WeekdayRangeWithExtraBackwards": weekday_range_with_extra_backwards,
-            "WeekdayRangeWithTimeRange": weekday_range_with_time_range,
-            "UntilRange": until_range,
-            "ThroughRange": through_range,
-            "TimeRange": time_range,
-            "AltTimeRange": alt_time_range,
+            "MonthRange": monthRange,
+            "MultiTime": multiTime,
+            "WeekdayRangeWithTime": weekdayRangeWithTime,
+            "WeekdayRangeWithExtra": weekdayRangeWithExtra,
+            "WeekdayRangeWithExtraBackwards": weekdayRangeWithExtraBackwards,
+            "WeekdayRangeWithTimeRange": weekdayRangeWithTimeRange,
+            "UntilRange": untilRange,
+            "ThroughRange": throughRange,
+            "TimeRange": timeRange,
+            "AltTimeRange": altTimeRange,
 
 This is default expression or pattern. ```any``` means
 if value is defined, and there is array with even a single defined value then return true.

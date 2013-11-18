@@ -1,6 +1,6 @@
 We can assume that higher ordered patterns return more complex results than lower ordered patterns.
 So if we come across an input like ```Oct. 1-2```, one pattern might match ```Oct. 1```, and another
-```Oct. 1-2```, with the latter having a higher order. Because date_machine can operates on
+```Oct. 1-2```, with the latter having a higher order. Because dateMachine can operates on
 full text machines, it's not enough to simply discard all results but the highest ordered one.
 Instead we have to find the best match per section of text.
 
@@ -11,18 +11,18 @@ The best match is found by removing results that overlap with higher-ordered res
                         (start1 >= start2 and start1 >= end2 and end1 >= end2 and end1 >= start2))
 
 
-        overlapping_at = (start, end, current) ->
+        overlappingAt = (start, end, current) ->
             output = []
-            for current_index of current
-                [_, c_start, c_end, _] = current[current_index]
+            for currentIndex of current
+                [_, cStart, cEnd, _] = current[currentIndex]
 
-                if overlapping(c_start, c_end, start, end)
-                    output.push current_index
+                if overlapping(cStart, cEnd, start, end)
+                    output.push currentIndex
             return output
 
-        remove_lower_overlapping = (current, higher) ->
-            [order, h_start, h_end, match] = higher
-            overlaps = overlapping_at(h_start, h_end, current)
+        removeLowerOverlapping = (current, higher) ->
+            [order, hStart, hEnd, match] = higher
+            overlaps = overlappingAt(hStart, hEnd, current)
             for overlap in overlaps
                 current.splice(overlap, 1)
             if overlaps.length > 0
@@ -35,29 +35,29 @@ The best match is found by removing results that overlap with higher-ordered res
 
 Helper functions
 
-        as_list = (_) -> [].concat(_)
-        get_results = (_) -> (i[3] for i in _)
+        asList = (_) -> [].concat(_)
+        getResults = (_) -> (i[3] for i in _)
         any = (_) -> _? and ((not (_ instanceof Array )) or _.filter((a)->a?).length > 0)
-        get_best = (_) ->
-            get_results(_.reduce(remove_lower_overlapping, []))
-        sort_by_order_ascending = (_) -> _.sort((a,b)->a[0]-b[0])
-        get_capture_groups = (_) -> _.slice(1)
-        matched_text_length = (_) -> _[0].length
+        getBest = (_) ->
+            getResults(_.reduce(removeLowerOverlapping, []))
+        sortByOrderAscending = (_) -> _.sort((a,b)->a[0]-b[0])
+        getCaptureGroups = (_) -> _.slice(1)
+        matchedTextLength = (_) -> _[0].length
 
 
-This is the actual parser function, ```this.date_machine``` should be the only thing exported by date_machine.js.
+This is the actual parser function, ```this.dateMachine``` should be the only thing exported by dateMachine.js.
 
-        this.date_machine = (input) ->
-            date_machine_output = []
-            for pattern in parser_description
+        this.dateMachine = (input) ->
+            dateMachineOutput = []
+            for pattern in parserDescription
                 regex = pattern.regex
-                [take, function_name, tree] = pattern.tree
+                [take, functionName, tree] = pattern.tree
                 while (matches = regex.exec(input)) isnt null
-                    matcher_output = reparse_emulator(take, function_name, tree, get_capture_groups(matches), functions)
+                    matcherOutput = reparseEmulator(take, functionName, tree, getCaptureGroups(matches), functions)
 
-                    start = regex.lastIndex - matched_text_length(matches)
+                    start = regex.lastIndex - matchedTextLength(matches)
                     end = regex.lastIndex - 1
-                    if any(matcher_output)
-                        date_machine_output.push [pattern.order, start, end, as_list(matcher_output)]
+                    if any(matcherOutput)
+                        dateMachineOutput.push [pattern.order, start, end, asList(matcherOutput)]
 
-              return get_best(sort_by_order_ascending(date_machine_output))
+              return getBest(sortByOrderAscending(dateMachineOutput))
