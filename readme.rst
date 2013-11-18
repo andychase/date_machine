@@ -33,8 +33,7 @@ Usage
 .. code-block:: python
 
     import date_machine
-    date_machine_parse = date_machine.build_date_parser()
-    date_machine_parse('Jan 1st') 
+    date_machine.parse('Jan 1st')
     # [Date(month=1, day=11)]
 
 

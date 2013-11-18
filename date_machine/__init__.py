@@ -13,3 +13,5 @@ def build_date_parser(parser_type=reparse.basic_parser):
         expressions_yaml_path='data/expressions.yaml',
         patterns_yaml_path='data/patterns.yaml'
     )
+
+parse = build_date_parser()
