@@ -46,7 +46,8 @@ table, th, td { border: 1px solid black; padding: 3px;}
 a {text-decoration: none; color: black;}
 a:hover {background-color: rgba(0, 0, 0, 0.21);}
 .build_status:hover, .gh-btn:hover {background-color:transparent;}
-pre {margin-top: 18px; font-size: 10pt;}
+pre {font-size: 10pt;}
+pre.usage {margin-top: 18px; }
     </style>
         <script type="text/javascript" src="date_machine.js"></script>
         <script type="text/javascript">
@@ -136,9 +137,10 @@ parser_description = [{"regex": "(?:(?:(?:([0]?[1-9]|1[0-2])[:\\.]([0-5][0-9])(?
     <div><h2 id="download">Download</h2>
         <a href="date_machine.js">.js</a><br />
         <a href="https://github.com/asperous/date_machine/archive/master.zip">.zip</a>
+        <pre>pip install date_machine</pre>
     </div>
     <div><h2 id="usage">Usage</h2>
-        <pre>JS: this.date_machine('Jan 2');
+        <pre class="usage">JS: this.date_machine('Jan 2');
 Py: date_machine.parse('Jan 2')</pre>
     </div>
     <div>
