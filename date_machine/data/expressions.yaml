@@ -134,7 +134,7 @@ DateNum:
 YearNum:
   Chase Year:
     Expression: |
-        ([12][0-9]{3})
+        ([12][0-9]{3}|[09][0-9])
     Description: >
          Simple Year Matching
     Matches:
@@ -147,7 +147,7 @@ YearNum:
 MonthNum:
   Chase Month:
     Expression: |
-      (1[0-2]|[0][1-9])
+      (1[0-2]|[0]?[1-9])
     Groups:
       - MonthNum
 

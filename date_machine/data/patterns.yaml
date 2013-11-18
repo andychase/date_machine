@@ -25,7 +25,14 @@ BasicTime:
   Pattern: |
     <Time>,?\s<Weekday>
   Matches:
-    4:00pm
+    4:00pm Tuesday
+
+RevBasicTime:
+  Order: 1
+  Pattern: |
+    <Weekday>(?:\sat\s|,\s|:\s)<Time>
+  Matches:
+    Wednesday at 4:00pm
 
 BasicText:
   Order: 3
