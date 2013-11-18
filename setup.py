@@ -12,7 +12,7 @@ def readme_or_docstring():
         return date_machine.__doc__
 
 setup(name='date_machine',
-      version='0.1',
+      version='0.2',
       description='The last date parser',
       long_description=readme_or_docstring(),
       author='Andy Chase',
@@ -21,9 +21,9 @@ setup(name='date_machine',
       download_url="https://github.com/asperous/date_machine/archive/master.zip",
       license="MIT",
       packages=['date_machine'],
-      install_requires=["reparse"],
+      install_requires=["reparse", "pyyaml"],
       classifiers=(
-          'Development Status :: 2 - Pre-Alpha',
+          'Development Status :: 4 - Beta',
           'Natural Language :: English',
           'License :: OSI Approved :: MIT License',
           'Programming Language :: Python',
