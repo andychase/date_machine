@@ -1,9 +1,11 @@
-import reparse
 import sys
+
+import reparse
+
 sys.path.append('..')
 from date_machine import build_date_parser
 from test.evaluate import evaluate_msg
-from javascript.generate_javascript import generate_js
+from generate_javascript import generate_js
 
 modes = {
     'python': reparse.basic_parser,
