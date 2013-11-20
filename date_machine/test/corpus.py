@@ -1,5 +1,5 @@
 from datetime import timedelta
-from date_machine.python.functions import Date
+from date_machine.functions import Date
 
 corpus = {
     "Standard Slash Format": {

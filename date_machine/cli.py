@@ -1,11 +1,22 @@
 import sys
-
+import json
 import reparse
 
 sys.path.append('..')
 from date_machine import build_date_parser
 from test.evaluate import evaluate_msg
-from generate_javascript import generate_js
+
+
+def generate_js(patterns):
+    def _generate(patterns):
+        for pattern in patterns:
+            order, tree, regex = pattern
+            regex = regex.replace("\n", "").replace(" ", "")
+            yield {'order': order, 'tree': tree, 'regex': regex}
+    output = "        parserDescription = {};".format(json.dumps(list(_generate(patterns))))
+    with open('../javascript/parseDescription.litcoffee', 'w') as f:
+        f.write(output)
+    return 'OK'
 
 modes = {
     'python': reparse.basic_parser,

@@ -1,2 +1,1 @@
-@echo off
 coffee --join dateMachine.js --compile functions.litcoffee parserDescription.litcoffee  parser.litcoffee reparseEmulator.litcoffee & coffee --join tests/tests.js --compile functions.litcoffee parserDescription.litcoffee parser.litcoffee reparseEmulator.litcoffee tests/tests.litcoffee
