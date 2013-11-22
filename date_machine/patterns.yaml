@@ -52,7 +52,7 @@ MultiTime:
 Slash:
   Order: 5
   Pattern: |
-    <Slash>\s?-?\s?<Time>?
+    <MonthNum>\/<DateNum>\/<YearNum>\s?-?\s?<Time>?
   Matches:
     01/18/2013 | 12/3/2012
 
