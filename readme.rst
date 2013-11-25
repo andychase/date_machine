@@ -15,7 +15,7 @@ It is based on Reparse_, and includes 14 date patterns, and a Javascript version
 
 - Fast
 - Scannable: Use over full text and find dates
-- Honest: no approximations given about the dates (if the year is missing, it's not included, for example)
+- Honest: no approximations given about the dates (i.e. if the year is missing it's not included)
 - Portable: Parser description compiles to Regex/Json. You just have to write the output builder functions.
 - Highly-Customizable: Adding more formats at different levels is easy (if you know regular expressions).
 
