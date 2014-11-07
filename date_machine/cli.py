@@ -26,7 +26,7 @@ modes = {
 }
 
 
-def cli(_, mode='tree', verbose=''):
+def cli(mode='tree', verbose=''):
     verbose = True if verbose == 'verbose' else False
     if verbose:
             modes['eval'] = lambda _: evaluate_msg(reparse.pattern_list(_), True)
@@ -39,4 +39,4 @@ def cli(_, mode='tree', verbose=''):
 
 
 if __name__ == "__main__":
-    cli(*sys.argv[:3])
+    cli(*sys.argv[1:3])
