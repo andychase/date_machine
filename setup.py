@@ -12,13 +12,13 @@ def readme_or_docstring():
         return date_machine.__doc__
 
 setup(name='date_machine',
-      version='0.2',
+      version='0.21',
       description='The last date parser',
       long_description=readme_or_docstring(),
       author='Andy Chase',
-      author_email='andy@asperous.us',
-      url='http://asperous.github.io/date_machine',
-      download_url="https://github.com/asperous/date_machine/archive/master.zip",
+      author_email='andy@andychase.us',
+      url='https://andychase.me/date_machine',
+      download_url="https://github.com/andychase/date_machine/archive/master.zip",
       license="MIT",
       packages=['date_machine'],
       install_requires=["reparse", "pyyaml"],

@@ -77,5 +77,5 @@ CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-.. _Github: https://github.com/asperous/date_machine
-.. _Reparse: https://github.com/asperous/reparse
+.. _Github: https://github.com/andychase/date_machine
+.. _Reparse: https://github.com/andychase/reparse
