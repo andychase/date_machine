@@ -1,7 +1,7 @@
 We can assume that higher ordered patterns return more complex results than lower ordered patterns.
 So if we come across an input like ```Oct. 1-2```, one pattern might match ```Oct. 1```, and another
 ```Oct. 1-2```, with the latter having a higher order. Because dateMachine can operates on
-full text machines, it's not enough to simply discard all results but the highest ordered one.
+full text, it's not enough to simply discard all results but the highest ordered one.
 Instead we have to find the best match per section of text.
 
 The best match is found by removing results that overlap with higher-ordered results.
